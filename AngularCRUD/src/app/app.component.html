@@ -1,0 +1,8 @@
+<div class="budget-management-container">
+  <h2 style="display: block; text-align: center;">Budget Management</h2>
+  <div class="budget-form">
+    <label for="amount" style="display: block; text-align: center;">Monthly Budget</label>
+    <input type="text" style="display: block; text-align: center;" id="amount" [(ngModel)]="amount" (input)="formatAmount()" (keydown.enter)="saveBudget()" placeholder="Enter amount" />
+    <button class="save-button" (click)="saveBudget()">Save</button>
+  </div>
+</div>
