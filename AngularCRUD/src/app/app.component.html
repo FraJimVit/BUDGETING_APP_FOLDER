@@ -1,8 +1,36 @@
 <div class="budget-management-container">
-  <h2 style="display: block; text-align: center;">Budget Management</h2>
+  <h2 style="text-align: center;">Budget Management</h2>
   <div class="budget-form">
-    <label for="amount" style="display: block; text-align: center;">Monthly Budget</label>
-    <input type="text" style="display: block; text-align: center;" id="amount" [(ngModel)]="amount" (input)="formatAmount()" (keydown.enter)="saveBudget()" placeholder="Enter amount" />
-    <button class="save-button" (click)="saveBudget()">Save</button>
+    <label for="amount" style="text-align: center;">Monthly Budget</label>
+    <input type="text" id="amount" [(ngModel)]="amount" (input)="formatAmount()" (keydown.enter)="saveBudget()" placeholder="Enter amount" />
+    <button class="save-button" *ngIf="!budgetSaved" (click)="saveBudget()">Save</button>
+  </div>
+
+  <div *ngIf="budgetSaved" class="expenses-form">
+    <h3>Add Expenses</h3>
+    <div *ngFor="let category of categories">
+      <div (click)="toggleCategory(category)" class="category-header">
+        <h4>{{category.name}}: {{calculateUsedBudget(category) | currency}} <span [class]="category.expanded ? 'minus' : 'plus'"></span></h4>
+      </div>
+      <div *ngIf="category.expanded" class="category-form">
+        <input type="number" [(ngModel)]="category.newExpenseAmount" placeholder="Enter amount for {{category.name}}" (click)="$event.stopPropagation()" />
+        <input type="text" [(ngModel)]="category.newExpenseName" placeholder="Enter expense name" (click)="$event.stopPropagation()" />
+        <button class="save-button" (click)="addExpense(category)">Add Expense</button>
+
+        <ul>
+          <li *ngFor="let expense of category.expenses; let i = index">
+            {{expense.name}}: {{expense.amount | currency}}
+            <button (click)="editExpense(category, i)">Edit</button>
+            <button (click)="deleteExpense(category, i)">Delete</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <button class="save-button" (click)="saveExpenses()">Save All Expenses</button>
+  </div>
+
+  <div class="remaining-budget">
+    <h3>Remaining Budget</h3>
+    <p>{{calculateRemainingBudget() | currency}}</p>
   </div>
 </div>
