@@ -6,8 +6,17 @@
     <button class="save-button" *ngIf="!budgetSaved" (click)="saveBudget()">Save</button>
   </div>
 
+  <div class="calendar-container">
+    <mat-form-field appearance="fill">
+      <mat-label>Select Date</mat-label>
+      <input matInput [matDatepicker]="picker" (dateChange)="onDateChange($event)">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </div>
+
   <div *ngIf="budgetSaved" class="expenses-form">
-    <h3>Add Expenses</h3>
+    <h3>Add Expenses for {{ selectedDate ? (selectedDate | date:'fullDate') : '' }}</h3>
     <div *ngFor="let category of categories">
       <div (click)="toggleCategory(category)" class="category-header">
         <h4>{{category.name}}: {{calculateUsedBudget(category) | currency}} <span [class]="category.expanded ? 'minus' : 'plus'"></span></h4>
@@ -17,11 +26,11 @@
         <input type="text" [(ngModel)]="category.newExpenseName" placeholder="Enter expense name" (click)="$event.stopPropagation()" />
         <button class="save-button" (click)="addExpense(category)">Add Expense</button>
 
-        <ul>
-          <li *ngFor="let expense of category.expenses; let i = index">
+        <ul *ngIf="selectedDate">
+          <li *ngFor="let expense of category.expenses[selectedDate.toISOString().split('T')[0]]; let i = index">
             {{expense.name}}: {{expense.amount | currency}}
-            <button (click)="editExpense(category, i)">Edit</button>
-            <button (click)="deleteExpense(category, i)">Delete</button>
+            <button (click)="editExpense(category, selectedDate.toISOString().split('T')[0], i)">Edit</button>
+            <button (click)="deleteExpense(category, selectedDate.toISOString().split('T')[0], i)">Delete</button>
           </li>
         </ul>
       </div>

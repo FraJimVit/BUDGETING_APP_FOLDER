@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "ng-pick-datetime": "^7.0.0"
+  }
+}

@@ -3,10 +3,15 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { DateAdapter } from '@angular/material/core';
 import { GenericService } from './generic.service';
 import { Observable } from 'rxjs';
 import { Product } from './product';
-import Swal from 'sweetalert2'; // Importa SweetAlert2
+import Swal from 'sweetalert2';
 
 interface Expense {
   name: string;
@@ -18,35 +23,35 @@ interface Category {
   amount: number;
   newExpenseName: string;
   newExpenseAmount: number;
-  expenses: Expense[];
+  expenses: { [date: string]: Expense[] };
   expanded: boolean;
 }
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, HttpClientModule, FormsModule],
+  imports: [CommonModule, RouterOutlet, HttpClientModule, FormsModule, MatDatepickerModule, MatNativeDateModule, MatFormFieldModule, MatInputModule],
   providers: [GenericService],
   templateUrl: './app.component.html',
   styles: [],
 })
 export class AppComponent implements OnInit {
-  amount: string = ''; // Inicializamos la propiedad 'amount' como string
-  notification: string | null = null; // Propiedad para las notificaciones
-  budgetSaved: boolean = false; // Propiedad para indicar si el presupuesto se ha guardado
+  amount: string = '';
+  notification: string | null = null;
+  budgetSaved: boolean = false;
+  selectedDate: Date | null = null;
 
-  // Propiedad para las categorías y sus gastos
   categories: Category[] = [
-    { name: 'Housing', amount: 0, newExpenseName: '', newExpenseAmount: 0, expenses: [], expanded: false },
-    { name: 'Food', amount: 0, newExpenseName: '', newExpenseAmount: 0, expenses: [], expanded: false },
-    { name: 'Transport', amount: 0, newExpenseName: '', newExpenseAmount: 0, expenses: [], expanded: false },
-    { name: 'Entertainment', amount: 0, newExpenseName: '', newExpenseAmount: 0, expenses: [], expanded: false }
+    { name: 'Housing', amount: 0, newExpenseName: '', newExpenseAmount: 0, expenses: {}, expanded: false },
+    { name: 'Food', amount: 0, newExpenseName: '', newExpenseAmount: 0, expenses: {}, expanded: false },
+    { name: 'Transport', amount: 0, newExpenseName: '', newExpenseAmount: 0, expenses: {}, expanded: false },
+    { name: 'Entertainment', amount: 0, newExpenseName: '', newExpenseAmount: 0, expenses: {}, expanded: false }
   ];
 
-  constructor(private service: GenericService<Product>){}
+  constructor(private service: GenericService<Product>, private dateAdapter: DateAdapter<Date>){}
 
   ngOnInit(): void {
-    // Puedes agregar lógica de inicialización aquí si es necesario
+    this.dateAdapter.setLocale('en-GB');
   }
 
   formatAmount() {
@@ -60,7 +65,7 @@ export class AppComponent implements OnInit {
     const numericValue = parseFloat(this.amount.replace(/,/g, ''));
     if (!isNaN(numericValue)) {
       console.log(`Monthly Budget: ${numericValue}`);
-      this.budgetSaved = true; // Indicar que el presupuesto se ha guardado
+      this.budgetSaved = true;
       this.showNotification(`Monthly Budget Saved: ${numericValue}`, 'success');
     } else {
       this.showNotification('Please enter a valid amount.', 'error');
@@ -69,7 +74,11 @@ export class AppComponent implements OnInit {
 
   addExpense(category: Category) {
     if (category.newExpenseName && category.newExpenseAmount) {
-      category.expenses.push({ name: category.newExpenseName, amount: category.newExpenseAmount });
+      const dateKey = this.selectedDate ? this.selectedDate.toISOString().split('T')[0] : '';
+      if (!category.expenses[dateKey]) {
+        category.expenses[dateKey] = [];
+      }
+      category.expenses[dateKey].push({ name: category.newExpenseName, amount: category.newExpenseAmount });
       category.newExpenseName = '';
       category.newExpenseAmount = 0;
       this.showNotification('Expense Added', 'success');
@@ -79,20 +88,25 @@ export class AppComponent implements OnInit {
   }
 
   saveExpenses() {
-    // Aquí puedes guardar los gastos ingresados por categoría
     console.log('Expenses:', this.categories);
     this.showNotification('Expenses Saved', 'success');
   }
 
   calculateUsedBudget(category: Category) {
-    // Calcular el presupuesto utilizado para cada categoría
-    return category.expenses.reduce((sum, expense) => sum + expense.amount, 0);
+    return Object.values(category.expenses).reduce((sum, dailyExpenses) => {
+      return sum + dailyExpenses.reduce((dailySum, expense) => dailySum + expense.amount, 0);
+    }, 0);
   }
 
   calculateRemainingBudget() {
-    // Calcular el presupuesto restante general
-    const totalExpenses = this.categories.reduce((sum, category) => sum + this.calculateUsedBudget(category), 0);
-    return parseFloat(this.amount.replace(/,/g, '')) - totalExpenses;
+    const totalMonthlyExpenses = this.categories.reduce((sum, category) => {
+      const expenseSum = Object.keys(category.expenses)
+        .filter(dateKey => dateKey.startsWith(this.selectedDate ? this.selectedDate.toISOString().substring(0, 7) : ''))
+        .reduce((dateSum, dateKey) => dateSum + category.expenses[dateKey].reduce((dailySum, expense) => dailySum + expense.amount, 0), 0);
+      return sum + expenseSum;
+    }, 0);
+
+    return parseFloat(this.amount.replace(/,/g, '')) - totalMonthlyExpenses;
   }
 
   toggleCategory(category: Category) {
@@ -113,28 +127,31 @@ export class AppComponent implements OnInit {
       showConfirmButton: false,
       position: 'top-end',
       toast: true,
-      icon: type // Cambia el ícono según el tipo de notificación
+      icon: type
     });
   }
 
-  editExpense(category: Category, index: number) {
-    const expense = category.expenses[index];
+  editExpense(category: Category, dateKey: string, index: number) {
+    const expense = category.expenses[dateKey][index];
     const newName = prompt('Edit expense name:', expense.name);
     const newAmount = parseFloat(prompt('Edit expense amount:', expense.amount.toString()) || '0');
   
     if (newName !== null && !isNaN(newAmount)) {
-      category.expenses[index] = { name: newName, amount: newAmount };
+      category.expenses[dateKey][index] = { name: newName, amount: newAmount };
       this.showNotification('Expense updated successfully!', 'success');
     } else {
       this.showNotification('Invalid input. Expense not updated.', 'error');
     }
   }
   
-  deleteExpense(category: Category, index: number) {
+  deleteExpense(category: Category, dateKey: string, index: number) {
     if (confirm('Are you sure you want to delete this expense?')) {
-      category.expenses.splice(index, 1); // Eliminar el gasto de la lista
+      category.expenses[dateKey].splice(index, 1);
       this.showNotification('Expense deleted successfully!', 'success');
     }
   }
-  
+
+  onDateChange(event: any) {
+    this.selectedDate = event.value;
+  }
 }

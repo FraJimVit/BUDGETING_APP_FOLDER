@@ -119,3 +119,10 @@ mat-form-field {
   background-color: #f44336;
   color: white;
 }
+
+.calendar-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
