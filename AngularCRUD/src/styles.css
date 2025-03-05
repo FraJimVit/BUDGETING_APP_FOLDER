@@ -126,3 +126,32 @@ mat-form-field {
   margin-top: 20px;
   margin-bottom: 20px;
 }
+
+/* Estilo para la barra de navegación */
+.navbar {
+  background-color: #333;
+  overflow: hidden;
+  text-align: center;
+  padding: 1rem;
+}
+
+/* Estilo para los enlaces */
+.navbar a {
+  color: white;
+  padding: 14px 20px;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.3s;
+}
+
+/* Cambia el color de fondo cuando el usuario pasa el ratón sobre el enlace */
+.navbar a:hover {
+  background-color: #575757;
+}
+
+/* Estilo para el enlace activo */
+.navbar a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+

@@ -1,0 +1,56 @@
+.perfil-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .perfil-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .perfil-photo {
+    margin-right: 20px;
+  }
+  
+  .perfil-photo img {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+  }
+  
+  .perfil-details {
+    flex: 1;
+  }
+  
+  .perfil-details h2,
+  .perfil-details input {
+    margin-top: 0;
+  }
+  
+  .edit-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+  }
+  
+  .edit-button:hover {
+    background-color: #45a049;
+  }
+  
+  .perfil-details input {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
