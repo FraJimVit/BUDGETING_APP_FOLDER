@@ -1,4 +1,4 @@
-/* You can add global styles to this file, and also import other style files */
+/* Estilo global */
 html, body {
   height: 100%;
   margin: 0;
@@ -96,7 +96,6 @@ mat-form-field {
   margin-bottom: 20px; /* Espacio entre categorías */
 }
 
-
 .category-form ul li button {
   margin-left: 10px;
   padding: 5px 10px;
@@ -129,14 +128,25 @@ mat-form-field {
 
 /* Estilo para la barra de navegación */
 .navbar {
+  display: flex;
+  justify-content: space-between; /* Asegura que los elementos estén distribuidos */
   background-color: #333;
-  overflow: hidden;
-  text-align: center;
   padding: 1rem;
 }
 
+/* Contenedor para los enlaces alineados a la izquierda */
+.nav-left {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Contenedor para los enlaces alineados a la derecha */
+.nav-right {
+  display: flex;
+}
+
 /* Estilo para los enlaces */
-.navbar a {
+.navbar a, .navbar .logout-button {
   color: white;
   padding: 14px 20px;
   text-decoration: none;
@@ -145,7 +155,7 @@ mat-form-field {
 }
 
 /* Cambia el color de fondo cuando el usuario pasa el ratón sobre el enlace */
-.navbar a:hover {
+.navbar a:hover, .navbar .logout-button:hover {
   background-color: #575757;
 }
 
@@ -155,3 +165,10 @@ mat-form-field {
   color: white;
 }
 
+/* Estilo para el botón de logout */
+.logout-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
