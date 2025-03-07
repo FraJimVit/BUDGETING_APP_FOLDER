@@ -1,0 +1,121 @@
+/* Contenedor principal */
+.logon-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #4CAF50, #4CAF50);
+    font-family: 'Arial', sans-serif;
+  }
+  
+  /* Caja de logon */
+  .logon-box {
+    width: 80%;
+    max-width: 400px;
+    padding: 5%;
+    background: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+    text-align: center;
+  }
+  
+  .logon-box h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: #333;
+  }
+  
+  /* Campos de entrada */
+  .logon-box input {
+    width: 90%;
+    padding: 1rem;
+    margin: 1rem 0;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    font-size: 1rem;
+  }
+  
+  .logon-box input:focus {
+    border-color: #4CAF50;
+  }
+  
+  /* Contenedor para botones Logon y Back */
+  .logon-box div {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  
+  /* Botón Logon */
+  .logon-box button[type="submit"] {
+    flex: 1;
+    padding: 10px 20px;
+    background-color: green;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .logon-box button[type="submit"]:hover {
+    background-color: #4CAF50;
+  }
+  
+  .logon-box button[type="submit"]:active {
+    transform: scale(0.97);
+  }
+  /* Contenedor de botones */
+.button-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espaciado entre los botones */
+    width: 100%; /* Asegura que los botones ocupen el ancho completo */
+  }
+  
+  /* Botón Back */
+  .cancel-button {
+    flex: 0; /* Solo ocupa el espacio necesario para su contenido */
+    background-color: #dc3545; /* Fondo rojo */
+    color: white;
+    border: none;
+    padding: 5px 15px; /* Tamaño compacto */
+    border-radius: 5px;
+    font-size: 14px; /* Tamaño de fuente pequeño */
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .cancel-button:hover {
+    background-color: #c82333; /* Rojo más oscuro */
+  }
+  
+  .cancel-button:active {
+    transform: scale(0.95); /* Pequeño efecto de contracción */
+  }
+  
+  /* Botón Logon */
+  .logon-button {
+    flex: 1; /* Ocupa todo el espacio restante en la línea */
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 10px 20px; /* Espaciado amplio */
+    border-radius: 5px;
+    font-size: 16px; /* Tamaño de fuente más grande */
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .logon-button:hover {
+    background-color: #4CAF50; /* Verde más claro */
+  }
+  
+  .logon-button:active {
+    transform: scale(0.97);
+  }

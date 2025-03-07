@@ -1,12 +1,7 @@
 <!-- Contenido de la página de presupuesto -->
 <div class="budget-management-container">
     <h2 style="text-align: center;">Budget Management</h2>
-    <div class="budget-form">
-      <label for="amount" style="text-align: center;">Monthly Budget</label>
-      <input type="text" id="amount" [(ngModel)]="amount" (input)="formatAmount()" (keydown.enter)="saveBudget()" placeholder="Enter amount" />
-      <button class="save-button" *ngIf="!budgetSaved" (click)="saveBudget()">Save</button>
-    </div>
-  
+    
     <div class="calendar-container">
       <mat-form-field appearance="fill">
         <mat-label>Select Date</mat-label>
@@ -15,7 +10,13 @@
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
     </div>
-  
+    
+    <div class="budget-form">
+      <label for="amount" style="text-align: center;">Monthly Budget</label>
+      <input type="text" id="amount" [(ngModel)]="amount" (input)="formatAmount()" (keydown.enter)="saveBudget()" placeholder="Enter amount" />
+      <button class="save-button" *ngIf="!budgetSaved" (click)="saveBudget()">Save</button>
+    </div>
+    
     <div *ngIf="budgetSaved" class="expenses-form">
       <h3>Add Expenses for {{ selectedDate ? (selectedDate | date:'fullDate') : '' }}</h3>
       <div *ngFor="let category of categories">

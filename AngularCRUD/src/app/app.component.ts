@@ -2,6 +2,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LoginComponent } from './login/login.component';
+import { LogonComponent } from './login/logon.component';
 import { BudgetingComponent } from './budgeting/budgeting.component';
 import { PerfilComponent } from './perfil/perfil.component';
 
@@ -12,6 +13,7 @@ import { PerfilComponent } from './perfil/perfil.component';
     CommonModule,
     FormsModule,
     LoginComponent,
+    LogonComponent,
     BudgetingComponent,
     PerfilComponent
   ],

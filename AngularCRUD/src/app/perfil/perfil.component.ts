@@ -16,7 +16,6 @@ export class PerfilComponent {
     name: 'Nombre del Usuario',
     email: 'usuario@example.com',
     phone: '+123 456 7890',
-    address: 'Calle Falsa 123, Ciudad, País'
   };
 
   toggleEdit() {

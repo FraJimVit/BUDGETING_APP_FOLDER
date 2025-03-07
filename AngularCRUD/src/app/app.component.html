@@ -1,4 +1,4 @@
-<nav class="navbar" *ngIf="currentPage !== 'login'">
+<nav class="navbar" *ngIf="currentPage !== 'login' && currentPage !== 'logon'">
   <div class="nav-left">
     <a (click)="navigate('budgeting')" [ngClass]="{ 'active': currentPage === 'budgeting' }">Inicio</a>
     <a (click)="navigate('perfil')" [ngClass]="{ 'active': currentPage === 'perfil' }">Perfil</a>
@@ -10,7 +10,9 @@
 
 <!-- Contenido según la página actual -->
 <div *ngIf="currentPage === 'login'">
-  <app-login (loginSuccess)="navigate('budgeting')"></app-login>
+  <app-login 
+    (loginSuccess)="navigate('budgeting')"
+    (navigatePage)="navigate($event)"></app-login>
 </div>
 
 <div *ngIf="currentPage === 'budgeting'">
@@ -19,4 +21,8 @@
 
 <div *ngIf="currentPage === 'perfil'">
   <app-perfil></app-perfil>
+</div>
+
+<div *ngIf="currentPage === 'logon'">
+  <app-logon (navigatePage)="navigate($event)"></app-logon>
 </div>

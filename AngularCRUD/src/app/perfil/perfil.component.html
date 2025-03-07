@@ -14,9 +14,6 @@
         <p *ngIf="!isEditing"><strong>Teléfono:</strong> {{ user.phone }}</p>
         <input *ngIf="isEditing" [(ngModel)]="user.phone" placeholder="+123 456 7890" />
         
-        <p *ngIf="!isEditing"><strong>Dirección:</strong> {{ user.address }}</p>
-        <input *ngIf="isEditing" [(ngModel)]="user.address" placeholder="Calle Falsa 123, Ciudad, País" />
-        
         <button class="edit-button" (click)="toggleEdit()">
           {{ isEditing ? 'Guardar Cambios' : 'Editar Perfil' }}
         </button>

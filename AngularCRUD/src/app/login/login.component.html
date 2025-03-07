@@ -1,15 +1,29 @@
 <div class="login-container">
+  <div class="login-box">
     <h2>Login</h2>
     <form (ngSubmit)="login()">
       <div class="form-group">
-        <label for="username">Username:</label>
-        <input type="text" id="username" [(ngModel)]="username" name="username">
+        <input
+          type="text"
+          id="username"
+          placeholder="Username"
+          [(ngModel)]="username"
+          name="username"
+        />
       </div>
       <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" id="password" [(ngModel)]="password" name="password">
+        <input
+          type="password"
+          id="password"
+          placeholder="Password"
+          [(ngModel)]="password"
+          name="password"
+        />
       </div>
       <button type="submit" class="login-button">Login</button>
     </form>
+    
+    <a (click)="navigate('logon')" class="logon-link">Don't have an account? Go to Logon Page!</a>
+
   </div>
-  
+</div>

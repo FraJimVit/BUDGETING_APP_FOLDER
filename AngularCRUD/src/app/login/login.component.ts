@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
+  @Output() navigatePage = new EventEmitter<string>(); // Evento de navegación
   @Output() loginSuccess = new EventEmitter<void>();
   username: string = '';
   password: string = '';
@@ -18,9 +19,13 @@ export class LoginComponent {
 
   login() {
     if (this.username === 'admin' && this.password === 'admin') {
-      this.loginSuccess.emit();
+      this.loginSuccess.emit(); // Evento de éxito al iniciar sesión
     } else {
       alert('Credenciales incorrectas');
     }
+  }
+
+  navigate(page: string) {
+    this.navigatePage.emit(page); // Emite el evento con la página deseada
   }
 }
