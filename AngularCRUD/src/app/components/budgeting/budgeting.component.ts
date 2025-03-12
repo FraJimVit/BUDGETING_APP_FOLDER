@@ -7,9 +7,9 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { DateAdapter } from '@angular/material/core';
-import { GenericService } from '../generic.service';
+import { GenericService } from '../../generic.service';
 import { Observable } from 'rxjs';
-import { Product } from '../product';
+import { Product } from '../../product';
 import Swal from 'sweetalert2';
 import { PerfilComponent } from '../perfil/perfil.component';
 
