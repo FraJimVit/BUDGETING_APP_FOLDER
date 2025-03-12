@@ -1,36 +1,47 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http'; // Importa HttpClientModule
+import { GenericService } from '../../generic.service';  // Ruta correcta para GenericService
+import { User } from '../../user';  // Ruta correcta para User
 
 @Component({
     selector: 'app-logon',
     standalone: true,
-    imports: [CommonModule, FormsModule], // Asegura que FormsModule esté presente
+    imports: [CommonModule, FormsModule, HttpClientModule], // Asegura que HttpClientModule esté presente
     templateUrl: './logon.component.html',
     styleUrls: ['./logon.component.css']
 })
 export class LogonComponent {
     @Output() navigatePage = new EventEmitter<string>(); // Evento de navegación
 
-    username: string = ''; // Propiedad enlazada al formulario
-    email: string = '';    // Propiedad enlazada al formulario
-    password: string = ''; // Propiedad enlazada al formulario
-    phone: string = '';    // Propiedad enlazada al formulario
-    confirmpassword: string = ''; // Propiedad enlazada al formulario
+    user: User = {
+        id: '',
+        username: '',
+        phone: '',
+        email: '',
+        password: ''
+    };
+    confirmpassword: string = '';
+
+    constructor(private userService: GenericService<User>) {}
 
     onSubmit() {
-        if (this.password !== this.confirmpassword) {
+        if (this.user.password !== this.confirmpassword) {
             alert('Las contraseñas no coinciden');
-        }
-        else if (this.username &&  this.phone && this.email && this.password.length >= 5) {
-            alert('Registro exitoso:\n\n' + JSON.stringify({ username: this.username, email: this.email, phrone: this.phone }, null, 4));
+        } else if (this.user.username && this.user.phone && this.user.email && this.user.password.length >= 5) {
+            this.userService.create(this.user).subscribe(() => {
+                alert('Registro exitoso:\n\n' + JSON.stringify({ username: this.user.username, email: this.user.email, phone: this.user.phone }, null, 4));
+            }, error => {
+                console.error('Error al registrar el usuario:', error);
+                alert('Error al registrar el usuario. Por favor intenta nuevamente.');
+            });
         } else {
             alert('Por favor completa todos los campos correctamente');
         }
     }
 
     cancel() {
-        this.navigatePage.emit('login'); // Emite el evento para navegar al login
+        this.navigatePage.emit('login');
     }
-      
 }

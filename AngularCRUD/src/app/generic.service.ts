@@ -6,7 +6,7 @@ import { Injectable } from '@angular/core';
 })
 export class GenericService<T> {
 
-  url = 'https://localhost:7221/';
+  url: string = 'https://localhost:7221/user/';
 
   constructor(private http:HttpClient) { }
 
