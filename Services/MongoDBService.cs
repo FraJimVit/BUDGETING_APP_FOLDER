@@ -1,37 +1,38 @@
 using MongoDB.Driver;
 using MongoDB.Bson;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Logging;
 
 public class MongoDBService
 {
     private readonly IMongoCollection<User> _usersCollection;
     private readonly IMongoCollection<BsonDocument> _countersCollection;
-    private readonly ILogger<MongoDBService> _logger;
 
-    public MongoDBService(IOptions<MongoDBSettings> mongoDBSettings, ILogger<MongoDBService> logger)
+    public MongoDBService(IOptions<MongoDBSettings> mongoDBSettings)
     {
         var mongoClient = new MongoClient(mongoDBSettings.Value.ConnectionString);
         var mongoDatabase = mongoClient.GetDatabase(mongoDBSettings.Value.DatabaseName);
         _usersCollection = mongoDatabase.GetCollection<User>(mongoDBSettings.Value.UsersCollectionName);
         _countersCollection = mongoDatabase.GetCollection<BsonDocument>("counters");
-        _logger = logger;
     }
 
     public async Task<User> AuthenticateAsync(string username, string password)
     {
-        _logger.LogInformation($"Autenticando usuario: {username}");
         var filter = Builders<User>.Filter.Eq(u => u.Username, username) & Builders<User>.Filter.Eq(u => u.Password, password);
-        var user = await _usersCollection.Find(filter).FirstOrDefaultAsync();
-        if (user != null)
-        {
-            _logger.LogInformation($"Usuario autenticado: {username}");
-        }
-        else
-        {
-            _logger.LogWarning($"Fallo de autenticación para el usuario: {username}");
-        }
-        return user;
+        return await _usersCollection.Find(filter).FirstOrDefaultAsync();
+    }
+
+    public async Task<User> GetUserByUsernameAsync(string username)
+    {
+        var filter = Builders<User>.Filter.Eq(u => u.Username, username);
+        return await _usersCollection.Find(filter).FirstOrDefaultAsync();
+    }
+
+    public async Task<bool> UpdateUserAsync(string id, User user)
+    {
+        var filter = Builders<User>.Filter.Eq(u => u.Id, id);
+        var updateResult = await _usersCollection.ReplaceOneAsync(filter, user);
+
+        return updateResult.IsAcknowledged && updateResult.ModifiedCount > 0;
     }
 
     public async Task<long> GetNextSequenceValue(string sequenceName)

@@ -1,23 +1,22 @@
 <div class="perfil-container">
-    <h1>Perfil</h1>
-    <div class="perfil-info">
-      <div class="perfil-photo">
-        <img src="https://i.pinimg.com/736x/f9/ef/f5/f9eff5fd8e045349b31d4641253f628f.jpg" alt="Foto de perfil">
-      </div>
-      <div class="perfil-details">
-        <h2 *ngIf="!isEditing">{{ user.name }}</h2>
-        <input *ngIf="isEditing" [(ngModel)]="user.name" placeholder="Nombre del Usuario" />
-        
-        <p *ngIf="!isEditing"><strong>Email:</strong> {{ user.email }}</p>
-        <input *ngIf="isEditing" [(ngModel)]="user.email" placeholder="usuario@example.com" />
-        
-        <p *ngIf="!isEditing"><strong>Teléfono:</strong> {{ user.phone }}</p>
-        <input *ngIf="isEditing" [(ngModel)]="user.phone" placeholder="+123 456 7890" />
-        
-        <button class="edit-button" (click)="toggleEdit()">
-          {{ isEditing ? 'Guardar Cambios' : 'Editar Perfil' }}
-        </button>
-      </div>
+  <h1>Perfil</h1>
+  <div class="perfil-info">
+    <div class="perfil-photo">
+      <img src="https://i.pinimg.com/736x/f9/ef/f5/f9eff5fd8e045349b31d4641253f628f.jpg" alt="Foto de perfil">
+    </div>
+    <div class="perfil-details">
+      <h2 *ngIf="!isEditing">{{ user.username }}</h2>
+      <input *ngIf="isEditing" [(ngModel)]="user.username" placeholder="Nombre del Usuario" />
+
+      <p *ngIf="!isEditing"><strong>Email:</strong> {{ user.email }}</p>
+      <input *ngIf="isEditing" [(ngModel)]="user.email" placeholder="usuario@example.com" />
+
+      <p *ngIf="!isEditing"><strong>Teléfono:</strong> {{ user.phone }}</p>
+      <input *ngIf="isEditing" [(ngModel)]="user.phone" placeholder="+123 456 7890" />
+
+      <button class="edit-button" (click)="toggleEdit()">
+        {{ isEditing ? 'Guardar Cambios' : 'Editar Perfil' }}
+      </button>
     </div>
   </div>
-  
+</div>

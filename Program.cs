@@ -11,6 +11,14 @@ builder.Services.Configure<MongoDBSettings>(
 builder.Services.AddSingleton<MongoDBService>();
 builder.Services.AddControllers();
 
+// Agregar soporte para sesiones
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 // Configura CORS
 builder.Services.AddCors(options =>
 {
@@ -19,7 +27,8 @@ builder.Services.AddCors(options =>
         {
             builder.WithOrigins("http://localhost:4200")
                    .AllowAnyHeader()
-                   .AllowAnyMethod();
+                   .AllowAnyMethod()
+                   .AllowCredentials(); // Asegurarse de permitir las credenciales
         });
 });
 
@@ -39,6 +48,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseSession(); // Añadir middleware de sesión
 app.UseAuthorization();
 app.UseCors("AllowAngularApp");
 app.MapControllers();
