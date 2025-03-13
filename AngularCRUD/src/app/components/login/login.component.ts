@@ -2,6 +2,8 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { GenericService } from '../../generic.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -16,14 +18,39 @@ export class LoginComponent {
   username: string = '';
   password: string = '';
 
-  constructor() {}
+  constructor(private userService: GenericService<any>) {}
 
   login() {
-    if (this.username === 'admin' && this.password === 'admin') {
-      this.loginSuccess.emit(); // Evento de éxito al iniciar sesión
-    } else {
-      alert('Credenciales incorrectas');
-    }
+    console.log("Intentando iniciar sesión con:", { username: this.username, password: this.password });
+    this.userService.authenticate(this.username, this.password).subscribe(
+      (user: any) => {
+        if (user) {
+          console.log("Usuario autenticado:", user);
+          this.showNotification('Inicio de sesión exitoso', 'success');
+          setTimeout(() => {
+            this.loginSuccess.emit(); // Evento de éxito al iniciar sesión
+          }, 3000);
+        } else {
+          this.showNotification('Credenciales incorrectas', 'error');
+        }
+      },
+      (error: any) => {
+        console.error('Error al autenticar el usuario:', error);
+        this.showNotification('Error al autenticar el usuario. Por favor intenta nuevamente.', 'error');
+      }
+    );
+  }
+
+  showNotification(message: string, type: 'success' | 'error') {
+    Swal.fire({
+      text: message,
+      timer: 3000,
+      timerProgressBar: true,
+      showConfirmButton: false,
+      position: 'top-end',
+      toast: true,
+      icon: type,
+    });
   }
 
   navigate(page: string) {

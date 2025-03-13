@@ -9,7 +9,6 @@ builder.Services.Configure<MongoDBSettings>(
     builder.Configuration.GetSection("MongoDBSettings"));
 
 builder.Services.AddSingleton<MongoDBService>();
-
 builder.Services.AddControllers();
 
 // Configura CORS
@@ -24,7 +23,6 @@ builder.Services.AddCors(options =>
         });
 });
 
-// Configura Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -42,9 +40,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
-
-// Usar CORS
 app.UseCors("AllowAngularApp");
-
 app.MapControllers();
 app.Run();
