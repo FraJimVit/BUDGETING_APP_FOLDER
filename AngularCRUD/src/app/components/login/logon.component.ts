@@ -1,19 +1,20 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http'; // Importa HttpClientModule
-import { GenericService } from '../../generic.service';  // Ruta correcta para GenericService
-import { User } from '../../user';  // Ruta correcta para User
+import { HttpClientModule } from '@angular/common/http';
+import { GenericService } from '../../generic.service';
+import { User } from '../../user';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-logon',
     standalone: true,
-    imports: [CommonModule, FormsModule, HttpClientModule], // Asegura que HttpClientModule esté presente
+    imports: [CommonModule, FormsModule, HttpClientModule],
     templateUrl: './logon.component.html',
     styleUrls: ['./logon.component.css']
 })
 export class LogonComponent {
-    @Output() navigatePage = new EventEmitter<string>(); // Evento de navegación
+    @Output() navigatePage = new EventEmitter<string>();
 
     user: User = {
         id: '',
@@ -28,17 +29,32 @@ export class LogonComponent {
 
     onSubmit() {
         if (this.user.password !== this.confirmpassword) {
-            alert('Las contraseñas no coinciden');
+            this.showNotification('Las contraseñas no coinciden', 'error');
         } else if (this.user.username && this.user.phone && this.user.email && this.user.password.length >= 5) {
             this.userService.create(this.user).subscribe(() => {
-                alert('Registro exitoso:\n\n' + JSON.stringify({ username: this.user.username, email: this.user.email, phone: this.user.phone }, null, 4));
+                this.showNotification('Registro exitoso', 'success');
+                setTimeout(() => {
+                    this.navigatePage.emit('login'); // Redirige a la página de login
+                }, 3000); // Espera 3 segundos antes de redirigir
             }, error => {
                 console.error('Error al registrar el usuario:', error);
-                alert('Error al registrar el usuario. Por favor intenta nuevamente.');
+                this.showNotification('Error al registrar el usuario. Por favor intenta nuevamente.', 'error');
             });
         } else {
-            alert('Por favor completa todos los campos correctamente');
+            this.showNotification('Por favor completa todos los campos correctamente', 'error');
         }
+    }
+
+    showNotification(message: string, type: 'success' | 'error') {
+        Swal.fire({
+            text: message,
+            timer: 3000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            position: 'top-end',
+            toast: true,
+            icon: type,
+        });
     }
 
     cancel() {
