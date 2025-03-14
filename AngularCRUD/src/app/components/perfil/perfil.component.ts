@@ -32,7 +32,7 @@ export class PerfilComponent implements OnInit {
       (user: User | null) => {
         if (user) {
           this.user = user;
-          console.log('Datos del usuario:', this.user); // Añadir log para verificar los datos del usuario
+          // console.log('Datos del usuario:', this.user); // Añadir log para verificar los datos del usuario
         }
       },
       (error) => {
