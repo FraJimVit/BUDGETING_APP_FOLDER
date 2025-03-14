@@ -78,21 +78,18 @@ export class MonthlyComponent implements OnInit {
     if (this.userId === null) {
       this.showNotification('User ID is null. Please log in again.', 'error');
     }
-    console.log('Loaded User ID:', this.userId);
+    // console.log('Loaded User ID:', this.userId);
   }
 
   formatAmount() {
-    console.log('Initial amount:', this.amount);
     if (this.amount.trim() === '') {
       this.showNotification('Please enter a valid amount.', 'error');
       return;
     }
 
     const numericValue = parseFloat(this.amount.replace(/,/g, ''));
-    console.log('Parsed numeric value:', numericValue);
     if (!isNaN(numericValue)) {
       this.amount = numericValue.toLocaleString('en-US');
-      console.log('Formatted amount:', this.amount);
     } else {
       this.showNotification('Please enter a valid amount.', 'error');
     }
@@ -102,16 +99,12 @@ export class MonthlyComponent implements OnInit {
     this.formatAmount(); // Formatea y valida el monto antes de continuar
 
     const numericValue = parseFloat(this.amount.replace(/,/g, ''));
-    console.log('Final numeric value:', numericValue);
-    console.log('User ID:', this.userId);
-    console.log('Selected Month:', this.selectedMonth);
-    console.log('Selected Year:', this.selectedYear);
 
     if (!isNaN(numericValue) && numericValue > 0 && this.userId !== null) {
       const month = this.selectedMonth !== null ? this.selectedMonth : 1; // Asegurarse de que el mes no sea nulo
       const year = this.selectedYear !== null ? this.selectedYear : new Date().getFullYear();
 
-      console.log('Proceeding to check budget for month and year...');
+      // console.log('Proceeding to check budget for month and year...');
 
       this.genericService.checkBudgetForMonth(this.userId, year, month).subscribe({
         next: (existingBudget) => {
@@ -143,7 +136,6 @@ export class MonthlyComponent implements OnInit {
         },
       });
     } else {
-      console.log('Validation failed.');
       if (this.userId === null) {
         this.showNotification('User ID is null. Please log in again.', 'error');
       } else {
@@ -161,16 +153,16 @@ export class MonthlyComponent implements OnInit {
         amount,
     };
 
-    console.log('Saving budget:', budget); // Mensaje de depuración para confirmar los datos del presupuesto
+    // console.log('Saving budget:', budget); // Mensaje de depuración para confirmar los datos del presupuesto
 
     this.genericService.saveBudget(budget).subscribe({
         next: (response) => {
-            console.log('Budget saved successfully:', response); // Confirmar que el presupuesto se ha guardado
+            // console.log('Budget saved successfully:', response); // Confirmar que el presupuesto se ha guardado
             this.budgetSaved = true;
             this.showNotification(`Monthly Budget Saved: ${amount}`, 'success');
         },
         error: (error) => {
-            console.error('Error saving budget:', error); // Manejo de errores
+            // console.error('Error saving budget:', error); // Manejo de errores
             this.showNotification('Error saving budget. Details: ' + error.message, 'error'); // Notificar el error con más detalles
         },
     });
