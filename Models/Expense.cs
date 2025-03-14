@@ -21,4 +21,7 @@ public class Expense
 
     [BsonElement("amount")]
     public decimal Amount { get; set; }
+    
+    [BsonElement("categoryName")]
+    public string CategoryName { get; set; }
 }

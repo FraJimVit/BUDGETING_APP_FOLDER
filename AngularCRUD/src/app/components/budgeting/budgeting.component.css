@@ -1,0 +1,26 @@
+.menu-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 20px; /* Aumenta el tamaño del botón */
+    font-size: 18px; /* Texto más grande */
+    border: none;
+    border-radius: 8px; /* Bordes más redondeados */
+    cursor: pointer;
+    margin: 10px; /* Añade separación entre botones */
+}
+
+.menu-button:hover {
+    background-color: #45a049;
+}
+
+.button-container {
+    display: flex; /* Usa flexbox para centrar */
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    flex-wrap: wrap; /* Asegúrate de que los botones no se desborden */
+    gap: 15px; /* Separación adicional entre botones */
+}
+
+.budget-management-container {
+    text-align: center; /* Centra el contenido del encabezado */
+}

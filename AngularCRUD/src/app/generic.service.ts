@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from './user';
+import { Expense } from './expenses';
 
 @Injectable({
   providedIn: 'root'
@@ -51,7 +52,16 @@ export class GenericService<T> {
     return this.http.get<any>(`${this.url}budget/check/${userId}/${year}/${month}`);
   }
 
-  createExpense(expense: any): Observable<any> {
-    return this.http.post<any>(`${this.url}expense/create`, expense);
+  createExpense(expenses: Expense[]): Observable<{ success: boolean; message: string }> {
+    return this.http.post<{ success: boolean; message: string }>(`${this.url}expense/create`, expenses);
+  }  
+
+  getExpensesByUserId(userId: string): Observable<Expense[]> {
+    return this.http.get<Expense[]>(`${this.url}expense/user/${userId}`);
   }
+
+  deleteExpense(expenseId: string): Observable<any> {
+    return this.http.delete(`${this.url}expense/${expenseId}`);
+  }  
+  
 }

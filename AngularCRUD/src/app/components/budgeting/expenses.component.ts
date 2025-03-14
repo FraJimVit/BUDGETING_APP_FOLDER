@@ -84,6 +84,7 @@ export class ExpensesComponent implements OnInit {
         date: dateKey,
         name: category.newExpenseName,
         amount: category.newExpenseAmount,
+        categoryName: category.name
       });
       category.newExpenseName = '';
       category.newExpenseAmount = 0;
@@ -93,9 +94,62 @@ export class ExpensesComponent implements OnInit {
     }
   }
 
+  loadExpenses() {
+    if (this.userId) {
+      this.genericService.getExpensesByUserId(this.userId).subscribe(
+        (expenses: Expense[]) => {
+          // Reinicia las expenses de las categorías
+          this.categories.forEach(category => (category.expenses = {}));
+  
+          // Agrupa los gastos directamente en función de categoryName
+          expenses.forEach(expense => {
+            const category = this.categories.find(cat => cat.name === expense.categoryName);
+            if (category) {
+              const dateKey = expense.date.split('T')[0]; // Asegura formato YYYY-MM-DD
+              if (!category.expenses[dateKey]) {
+                category.expenses[dateKey] = [];
+              }
+              category.expenses[dateKey].push(expense);
+            }
+          });
+  
+          console.log('Expenses loaded and assigned:', this.categories);
+          this.showNotification('Expenses loaded successfully.', 'success');
+        },
+        error => {
+          console.error('Error loading expenses:', error);
+          this.showNotification('Failed to load expenses. Please try again.', 'error');
+        }
+      );
+    }
+  }
+  
+  
+
   saveExpenses() {
     console.log('Expenses:', this.categories);
-    this.showNotification('Expenses Saved', 'success');
+
+    const expensesToSave = this.categories.flatMap(category =>
+      Object.values(category.expenses).flat()
+    );
+  
+    console.log('Expenses to save:', expensesToSave);
+    this.genericService.createExpense(expensesToSave).subscribe(
+      response => {
+        if (response.success) {
+          this.showNotification('Expenses saved successfully!', 'success');
+          console.log('Response from server:', response);
+        } else {
+          this.showNotification('Failed to save expenses. Please try again.', 'error');
+          console.error('Unexpected response format:', response);
+        }
+      },
+      error => {
+        console.error('Error saving expenses:', error);
+        this.showNotification('Failed to save expenses. Please try again.', 'error');
+      }
+    );    
+        
   }
 
   calculateUsedBudget(category: Category): number {
@@ -164,10 +218,21 @@ export class ExpensesComponent implements OnInit {
 
   deleteExpense(category: Category, dateKey: string, index: number) {
     if (confirm('Are you sure you want to delete this expense?')) {
-      category.expenses[dateKey].splice(index, 1);
-      this.showNotification('Expense deleted successfully!', 'success');
+      const expense = category.expenses[dateKey][index]; // Obtén el gasto a eliminar
+  
+      this.genericService.deleteExpense(expense.id).subscribe(
+        () => {
+          // Elimina localmente si la solicitud al backend tuvo éxito
+          category.expenses[dateKey].splice(index, 1);
+          this.showNotification('Expense deleted successfully!', 'success');
+        },
+        error => {
+          console.error('Error deleting expense:', error);
+          this.showNotification('Failed to delete expense. Please try again.', 'error');
+        }
+      );
     }
-  }
+  }  
 
   onDateChange(event: any) {
     this.selectedDate = event.value;
@@ -188,5 +253,7 @@ export class ExpensesComponent implements OnInit {
         }
       );
     }
+
+    this.loadExpenses();
   }
 }

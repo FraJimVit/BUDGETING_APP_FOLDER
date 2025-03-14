@@ -42,16 +42,24 @@ public class ExpenseController : ControllerBase
         return Ok(expenses);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> CreateExpense([FromBody] Expense expense)
+    [HttpPost("create")]
+    public async Task<IActionResult> CreateExpenses([FromBody] List<Expense> expenses)
     {
-        if (expense == null)
+        if (expenses == null || expenses.Count == 0)
         {
-            return BadRequest("Expense cannot be null");
+            return BadRequest(new { success = false, message = "No expenses provided." });
         }
 
-        await _mongoDBService.CreateExpenseAsync(expense);
-        return CreatedAtAction(nameof(GetExpenseById), new { id = expense.Id }, expense);
+        foreach (var expense in expenses)
+        {
+            // Llama al método del servicio para verificar si el gasto existe
+            if (!await _mongoDBService.ExpenseExistsAsync(expense))
+            {
+                await _mongoDBService.CreateExpenseAsync(expense);
+            }
+        }
+
+        return Ok(new { success = true, message = "Expenses saved successfully." });
     }
 
     [HttpPut("{id}")]

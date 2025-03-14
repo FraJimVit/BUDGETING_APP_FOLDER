@@ -113,4 +113,13 @@ public class MongoDBService
         await _expensesCollection.DeleteOneAsync(x => x.Id == id);
     }
 
+    public async Task<bool> ExpenseExistsAsync(Expense expense)
+    {
+        return await _expensesCollection.Find(e =>
+            e.UserId == expense.UserId &&
+            e.Date == expense.Date &&
+            e.Name == expense.Name &&
+            e.Amount == expense.Amount
+        ).AnyAsync();
+    }
 }

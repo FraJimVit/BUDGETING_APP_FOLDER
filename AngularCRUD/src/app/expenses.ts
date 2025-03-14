@@ -6,6 +6,7 @@ export interface Expense {
     date: string; // Fecha del gasto
     name: string; // Nombre o descripción del gasto
     amount: number; // Monto del gasto
+    categoryName: string; // Nombre de la categoría del gasto
   }
   
   // Interface para representar una categoría de gastos
