@@ -21,7 +21,7 @@ export class LoginComponent {
   constructor(private userService: GenericService<any>) {}
 
   login() {
-    console.log("Intentando iniciar sesión con:", { username: this.username, password: this.password });
+    // console.log("Intentando iniciar sesión con:", { username: this.username, password: this.password });
     this.userService.authenticate(this.username, this.password).subscribe(
       (user: any) => {
         if (user) {

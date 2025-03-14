@@ -178,7 +178,7 @@ export class MonthlyComponent implements OnInit {
   showNotification(message: string, type: 'success' | 'error') {
     Swal.fire({
       text: message,
-      timer: 3000,
+      timer: 2000,
       timerProgressBar: true,
       showConfirmButton: false,
       position: 'top-end',
