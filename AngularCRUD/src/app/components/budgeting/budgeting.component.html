@@ -1,48 +1,14 @@
 <!-- Contenido de la página de presupuesto -->
 <div class="budget-management-container">
-    <h2 style="text-align: center;">Budget Management</h2>
-    
-    <div class="calendar-container">
-      <mat-form-field appearance="fill">
-        <mat-label>Select Date</mat-label>
-        <input matInput [matDatepicker]="picker" (dateChange)="onDateChange($event)">
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-    </div>
-    
-    <div class="budget-form">
-      <label for="amount" style="text-align: center;">Monthly Budget</label>
-      <input type="text" id="amount" [(ngModel)]="amount" (input)="formatAmount()" (keydown.enter)="saveBudget()" placeholder="Enter amount" />
-      <button class="save-button" *ngIf="!budgetSaved" (click)="saveBudget()">Save</button>
-    </div>
-    
-    <div *ngIf="budgetSaved" class="expenses-form">
-      <h3>Add Expenses for {{ selectedDate ? (selectedDate | date:'fullDate') : '' }}</h3>
-      <div *ngFor="let category of categories">
-        <div (click)="toggleCategory(category)" class="category-header">
-          <h4>{{category.name}}: {{calculateUsedBudget(category) | currency}} <span [class]="category.expanded ? 'minus' : 'plus'"></span></h4>
-        </div>
-        <div *ngIf="category.expanded" class="category-form">
-          <input type="number" [(ngModel)]="category.newExpenseAmount" placeholder="Enter amount for {{category.name}}" (click)="$event.stopPropagation()" />
-          <input type="text" [(ngModel)]="category.newExpenseName" placeholder="Enter expense name" (click)="$event.stopPropagation()" />
-          <button class="save-button" (click)="addExpense(category)">Add Expense</button>
-  
-          <ul *ngIf="selectedDate">
-            <li *ngFor="let expense of category.expenses[selectedDate.toISOString().split('T')[0]]; let i = index">
-              {{expense.name}}: {{expense.amount | currency}}
-              <button (click)="editExpense(category, selectedDate.toISOString().split('T')[0], i)">Edit</button>
-              <button (click)="deleteExpense(category, selectedDate.toISOString().split('T')[0], i)">Delete</button>
-            </li>
-          </ul>
-        </div>
+    <h2 style="text-align: center;">Budgeting Menu</h2>
+
+    <div class="budget-management-buttons">
+
+      <div class="button-container">
+        <button type="button" (click)="navigateToMonthlyBudget()" class="button">monthlybudget</button>
+        <button type="button" (click)="navigateToExpenses()" class="button">expenses</button>
       </div>
-      <button class="save-button" (click)="saveExpenses()">Save All Expenses</button>
+      
     </div>
-  
-    <div class="remaining-budget">
-      <h3>Remaining Budget</h3>
-      <p>{{calculateRemainingBudget() | currency}}</p>
-    </div>
-  </div>
+</div>
   

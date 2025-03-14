@@ -48,7 +48,7 @@ export class LogonComponent {
     showNotification(message: string, type: 'success' | 'error') {
         Swal.fire({
             text: message,
-            timer: 3000,
+            timer: 1000,
             timerProgressBar: true,
             showConfirmButton: false,
             position: 'top-end',

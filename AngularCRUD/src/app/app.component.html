@@ -16,7 +16,15 @@
 </div>
 
 <div *ngIf="currentPage === 'budgeting'">
-  <app-budgeting></app-budgeting>
+  <app-budgeting (navigatePage)="navigate($event)"></app-budgeting>
+</div>
+
+<div *ngIf="currentPage === 'monthlybudget'">
+  <app-monthly></app-monthly>
+</div>
+
+<div *ngIf="currentPage === 'expenses'">
+  <app-expenses></app-expenses>
 </div>
 
 <div *ngIf="currentPage === 'perfil'">

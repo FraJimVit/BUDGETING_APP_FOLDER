@@ -25,10 +25,14 @@ export class LoginComponent {
     this.userService.authenticate(this.username, this.password).subscribe(
       (user: any) => {
         if (user) {
-          console.log("Usuario autenticado:", user);
+          // Almacenar el ID de usuario en localStorage
+          localStorage.setItem('userId', user.id); // Transformar y almacenar el ID de usuario
+          // console.log("Usuario autenticado y ID almacenado en localStorage:", user.id);
+
           this.showNotification('Inicio de sesión exitoso', 'success');
           setTimeout(() => {
             this.loginSuccess.emit(); // Evento de éxito al iniciar sesión
+            this.navigatePage.emit('budgeting'); // Navegar a la página de presupuestos
           }, 3000);
         } else {
           this.showNotification('Credenciales incorrectas', 'error');
@@ -44,7 +48,7 @@ export class LoginComponent {
   showNotification(message: string, type: 'success' | 'error') {
     Swal.fire({
       text: message,
-      timer: 3000,
+      timer: 1000,
       timerProgressBar: true,
       showConfirmButton: false,
       position: 'top-end',

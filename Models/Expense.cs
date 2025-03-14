@@ -1,7 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-public class Budget
+public class Expense
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
@@ -10,11 +10,17 @@ public class Budget
     [BsonElement("userId")]
     public string UserId { get; set; } = string.Empty;
 
-    [BsonElement("year")]
-    public int Year { get; set; }
+    [BsonElement("budgetId")]
+    public string BudgetId { get; set; } = string.Empty;
 
-    [BsonElement("month")]
-    public int Month { get; set; }
+    [BsonElement("date")]
+    public DateTime Date { get; set; }
+
+    [BsonElement("category")]
+    public string Category { get; set; } = string.Empty;
+
+    [BsonElement("name")]
+    public string Name { get; set; } = string.Empty;
 
     [BsonElement("amount")]
     public double Amount { get; set; }

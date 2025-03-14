@@ -1,9 +1,13 @@
 using MongoDB.Driver;
 using MongoDB.Bson;
 using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
 public class MongoDBService
 {
+    private readonly IMongoCollection<Expense> _expensesCollection;
+    private readonly IMongoCollection<Budget> _budgetsCollection;
     private readonly IMongoCollection<User> _usersCollection;
     private readonly IMongoCollection<BsonDocument> _countersCollection;
 
@@ -11,8 +15,46 @@ public class MongoDBService
     {
         var mongoClient = new MongoClient(mongoDBSettings.Value.ConnectionString);
         var mongoDatabase = mongoClient.GetDatabase(mongoDBSettings.Value.DatabaseName);
+        _expensesCollection = mongoDatabase.GetCollection<Expense>("Expenses");
+        _budgetsCollection = mongoDatabase.GetCollection<Budget>("Budgets");
         _usersCollection = mongoDatabase.GetCollection<User>(mongoDBSettings.Value.UsersCollectionName);
         _countersCollection = mongoDatabase.GetCollection<BsonDocument>("counters");
+    }
+
+    public async Task CreateExpenseAsync(Expense expense)
+    {
+        await _expensesCollection.InsertOneAsync(expense);
+    }
+
+    public async Task<List<Expense>> GetExpensesByDateAsync(string userId, string budgetId, DateTime date)
+    {
+        var filter = Builders<Expense>.Filter.Eq(e => e.UserId, userId) &
+                     Builders<Expense>.Filter.Eq(e => e.BudgetId, budgetId) &
+                     Builders<Expense>.Filter.Eq(e => e.Date, date);
+        return await _expensesCollection.Find(filter).ToListAsync();
+    }
+
+    public async Task SaveBudgetAsync(Budget budget)
+    {
+        var filter = Builders<Budget>.Filter.Eq(b => b.UserId, budget.UserId) &
+                    Builders<Budget>.Filter.Eq(b => b.Year, budget.Year) &
+                    Builders<Budget>.Filter.Eq(b => b.Month, budget.Month);
+
+        var update = Builders<Budget>.Update
+                    .Set(b => b.Amount, budget.Amount);
+
+        await _budgetsCollection.UpdateOneAsync(filter, update, new UpdateOptions { IsUpsert = true });
+    }
+
+
+
+
+    public async Task<Budget> GetBudgetForMonthAsync(string userId, int year, int month)
+    {
+        var filter = Builders<Budget>.Filter.Eq(b => b.UserId, userId) &
+                     Builders<Budget>.Filter.Eq(b => b.Year, year) &
+                     Builders<Budget>.Filter.Eq(b => b.Month, month);
+        return await _budgetsCollection.Find(filter).FirstOrDefaultAsync();
     }
 
     public async Task<User> AuthenticateAsync(string username, string password)

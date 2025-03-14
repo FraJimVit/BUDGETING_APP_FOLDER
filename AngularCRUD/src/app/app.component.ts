@@ -3,8 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LoginComponent } from './components/login/login.component';
 import { LogonComponent } from './components/login/logon.component';
-import { BudgetingComponent } from './components/budgeting/budgeting.component';
 import { PerfilComponent } from './components/perfil/perfil.component';
+import { BudgetingComponent } from './components/budgeting/budgeting.component';
+import { MonthlyComponent } from './components/budgeting/monthly.component';
+import { ExpensesComponent } from './components/budgeting/expenses.component';
 
 @Component({
   selector: 'app-root',
@@ -14,8 +16,10 @@ import { PerfilComponent } from './components/perfil/perfil.component';
     FormsModule,
     LoginComponent,
     LogonComponent,
+    PerfilComponent,
     BudgetingComponent,
-    PerfilComponent
+    MonthlyComponent,
+    ExpensesComponent
   ],
   templateUrl: './app.component.html',
   styles: [],

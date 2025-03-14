@@ -1,0 +1,25 @@
+<div class="budget-management-container">
+  <h2 style="text-align: center;">Monthly Budget Management</h2>
+
+  <div class="calendar-container">
+    <mat-form-field appearance="fill">
+      <mat-label>Select Month</mat-label>
+      <select matNativeControl [(ngModel)]="selectedMonth">
+        <option *ngFor="let month of months" [value]="month.value">{{ month.name }}</option>
+      </select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Select Year</mat-label>
+      <select matNativeControl [(ngModel)]="selectedYear">
+        <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+      </select>
+    </mat-form-field>
+  </div>
+
+  <div class="budget-form">
+    <label for="amount" style="text-align: center;">Monthly Budget</label>
+    <input type="text" id="amount" [(ngModel)]="amount" (input)="formatAmount()" (keydown.enter)="saveBudget()" placeholder="Enter amount" />
+    <button class="save-button" (click)="saveBudget()">Save</button>
+  </div>
+</div>
