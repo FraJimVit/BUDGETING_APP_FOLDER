@@ -21,19 +21,6 @@ public class MongoDBService
         _countersCollection = mongoDatabase.GetCollection<BsonDocument>("counters");
     }
 
-    public async Task CreateExpenseAsync(Expense expense)
-    {
-        await _expensesCollection.InsertOneAsync(expense);
-    }
-
-    public async Task<List<Expense>> GetExpensesByDateAsync(string userId, string budgetId, DateTime date)
-    {
-        var filter = Builders<Expense>.Filter.Eq(e => e.UserId, userId) &
-                     Builders<Expense>.Filter.Eq(e => e.BudgetId, budgetId) &
-                     Builders<Expense>.Filter.Eq(e => e.Date, date);
-        return await _expensesCollection.Find(filter).ToListAsync();
-    }
-
     public async Task SaveBudgetAsync(Budget budget)
     {
         var filter = Builders<Budget>.Filter.Eq(b => b.UserId, budget.UserId) &
@@ -95,4 +82,35 @@ public class MongoDBService
         user.Id = (await GetNextSequenceValue("userId")).ToString();
         await _usersCollection.InsertOneAsync(user);
     }
+
+    public async Task<Expense> GetExpenseByIdAsync(string id)
+    {
+        return await _expensesCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+    }
+
+    public async Task<List<Expense>> GetExpensesByUserIdAsync(string userId)
+    {
+        return await _expensesCollection.Find(x => x.UserId == userId).ToListAsync();
+    }
+
+    public async Task<List<Expense>> GetExpensesByMonthlyBudgetIdAsync(string monthlyBudgetId)
+    {
+        return await _expensesCollection.Find(x => x.MonthlyBudgetId == monthlyBudgetId).ToListAsync();
+    }
+
+    public async Task CreateExpenseAsync(Expense expense)
+    {
+        await _expensesCollection.InsertOneAsync(expense);
+    }
+
+    public async Task UpdateExpenseAsync(string id, Expense expense)
+    {
+        await _expensesCollection.ReplaceOneAsync(x => x.Id == id, expense);
+    }
+
+    public async Task DeleteExpenseAsync(string id)
+    {
+        await _expensesCollection.DeleteOneAsync(x => x.Id == id);
+    }
+
 }

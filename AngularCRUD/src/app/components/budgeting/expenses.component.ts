@@ -3,28 +3,12 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule, DateAdapter } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { DateAdapter } from '@angular/material/core';
-import { GenericService } from '../../generic.service';
-import { Observable } from 'rxjs';
 import Swal from 'sweetalert2';
-import { PerfilComponent } from '../perfil/perfil.component';
-
-interface Expense {
-  name: string;
-  amount: number;
-}
-
-interface Category {
-  name: string;
-  amount: number;
-  newExpenseName: string;
-  newExpenseAmount: number;
-  expenses: { [date: string]: Expense[] };
-  expanded: boolean;
-}
+import { GenericService } from '../../generic.service';
+import { Expense, Category } from '../../expenses';
 
 @Component({
   selector: 'app-expenses',
@@ -37,7 +21,6 @@ interface Category {
     MatNativeDateModule,
     MatFormFieldModule,
     MatInputModule,
-    PerfilComponent // Importa el componente de perfil
   ],
   providers: [GenericService],
   templateUrl: './expenses.component.html',
@@ -45,69 +28,46 @@ interface Category {
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ExpensesComponent implements OnInit {
+  userId: string | null = null; // ID de usuario autenticado
   amount: string = '';
-  notification: string | null = null;
-  budgetSaved: boolean = false;
   selectedDate: Date | null = null;
+
   categories: Category[] = [
     {
       name: 'Housing',
-      amount: 0,
-      newExpenseName: '',
-      newExpenseAmount: 0,
-      expenses: {},
       expanded: false,
+      expenses: {},
     },
     {
       name: 'Food',
-      amount: 0,
-      newExpenseName: '',
-      newExpenseAmount: 0,
-      expenses: {},
       expanded: false,
+      expenses: {},
     },
     {
       name: 'Transport',
-      amount: 0,
-      newExpenseName: '',
-      newExpenseAmount: 0,
-      expenses: {},
       expanded: false,
+      expenses: {},
     },
     {
       name: 'Entertainment',
-      amount: 0,
-      newExpenseName: '',
-      newExpenseAmount: 0,
-      expenses: {},
       expanded: false,
+      expenses: {},
     },
   ];
 
-  constructor(
-    private dateAdapter: DateAdapter<Date>
-  ) {}
+  constructor(private dateAdapter: DateAdapter<Date>) {}
 
   ngOnInit(): void {
     this.dateAdapter.setLocale('en-GB');
+    this.loadUserId(); // Método para cargar el ID de usuario
   }
 
-  formatAmount() {
-    const numericValue = parseFloat(this.amount.replace(/,/g, ''));
-    if (!isNaN(numericValue)) {
-      this.amount = numericValue.toLocaleString('en-US');
+  loadUserId() {
+    this.userId = localStorage.getItem('userId'); // Obtén el ID de usuario del almacenamiento local
+    if (this.userId === null) {
+      this.showNotification('User ID is null. Please log in again.', 'error');
     }
-  }
-
-  saveBudget() {
-    const numericValue = parseFloat(this.amount.replace(/,/g, ''));
-    if (!isNaN(numericValue)) {
-      console.log(`Monthly Budget: ${numericValue}`);
-      this.budgetSaved = true;
-      this.showNotification(`Monthly Budget Saved: ${numericValue}`, 'success');
-    } else {
-      this.showNotification('Please enter a valid amount.', 'error');
-    }
+    // console.log('Loaded User ID:', this.userId);
   }
 
   addExpense(category: Category) {
@@ -117,6 +77,10 @@ export class ExpensesComponent implements OnInit {
         category.expenses[dateKey] = [];
       }
       category.expenses[dateKey].push({
+        id: '',
+        userId: this.userId!,
+        monthlyBudgetId: `${this.userId}-${this.selectedDate?.getFullYear()}-${this.selectedDate?.getMonth()! + 1}`,
+        date: dateKey,
         name: category.newExpenseName,
         amount: category.newExpenseAmount,
       });
@@ -133,7 +97,7 @@ export class ExpensesComponent implements OnInit {
     this.showNotification('Expenses Saved', 'success');
   }
 
-  calculateUsedBudget(category: Category) {
+  calculateUsedBudget(category: Category): number {
     return Object.values(category.expenses).reduce((sum, dailyExpenses) => {
       return (
         sum +
@@ -142,7 +106,7 @@ export class ExpensesComponent implements OnInit {
     }, 0);
   }
 
-  calculateRemainingBudget() {
+  calculateRemainingBudget(): number {
     const totalMonthlyExpenses = this.categories.reduce((sum, category) => {
       const expenseSum = Object.keys(category.expenses)
         .filter((dateKey) =>
@@ -169,12 +133,6 @@ export class ExpensesComponent implements OnInit {
     category.expanded = !category.expanded;
   }
 
-  onKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Enter') {
-      this.saveBudget();
-    }
-  }
-
   showNotification(message: string, type: 'success' | 'error') {
     Swal.fire({
       text: message,
@@ -195,7 +153,7 @@ export class ExpensesComponent implements OnInit {
     );
 
     if (newName !== null && !isNaN(newAmount)) {
-      category.expenses[dateKey][index] = { name: newName, amount: newAmount };
+      category.expenses[dateKey][index] = { ...expense, name: newName, amount: newAmount };
       this.showNotification('Expense updated successfully!', 'success');
     } else {
       this.showNotification('Invalid input. Expense not updated.', 'error');

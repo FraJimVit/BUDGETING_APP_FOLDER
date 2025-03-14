@@ -13,11 +13,10 @@
     
     <div class="budget-form">
       <label for="amount" style="text-align: center;">Monthly Budget</label>
-      <input type="text" id="amount" [(ngModel)]="amount" (input)="formatAmount()" (keydown.enter)="saveBudget()" placeholder="Enter amount" />
-      <button class="save-button" *ngIf="!budgetSaved" (click)="saveBudget()">Save</button>
+      <input disabled type="text" id="amount" [(ngModel)]="amount" placeholder="Enter amount" />
     </div>
     
-    <div *ngIf="budgetSaved" class="expenses-form">
+    <div class="expenses-form">
       <h3>Add Expenses for {{ selectedDate ? (selectedDate | date:'fullDate') : '' }}</h3>
       <div *ngFor="let category of categories">
         <div (click)="toggleCategory(category)" class="category-header">
