@@ -31,6 +31,7 @@ export class ExpensesComponent implements OnInit {
   userId: string | null = null; // ID de usuario autenticado
   amount: string = '';
   selectedDate: Date | null = null;
+  monthlyBudget: any = null; // Para almacenar los datos del presupuesto mensual
 
   categories: Category[] = [
     {
@@ -55,7 +56,7 @@ export class ExpensesComponent implements OnInit {
     },
   ];
 
-  constructor(private dateAdapter: DateAdapter<Date>) {}
+  constructor(private dateAdapter: DateAdapter<Date>, private genericService: GenericService<any>) {}
 
   ngOnInit(): void {
     this.dateAdapter.setLocale('en-GB');
@@ -118,15 +119,16 @@ export class ExpensesComponent implements OnInit {
           (dateSum, dateKey) =>
             dateSum +
             category.expenses[dateKey].reduce(
-              (dailySum, expense) => dailySum + expense.amount,
+              (dailySum, expense) => dailySum + (expense.amount || 0),
               0
             ),
           0
         );
       return sum + expenseSum;
     }, 0);
-
-    return parseFloat(this.amount.replace(/,/g, '')) - totalMonthlyExpenses;
+  
+    const parsedAmount = parseFloat(this.amount.replace(/,/g, '')) || 0; // Asegura que sea un número
+    return parsedAmount - totalMonthlyExpenses;
   }
 
   toggleCategory(category: Category) {
@@ -169,5 +171,22 @@ export class ExpensesComponent implements OnInit {
 
   onDateChange(event: any) {
     this.selectedDate = event.value;
+
+    if (this.userId) {
+      const currentDate = new Date();
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth() + 1; // Los meses comienzan en 0
+  
+      this.genericService.checkBudgetForMonth(this.userId, year, month).subscribe(
+        (budget) => {
+          this.monthlyBudget = budget;
+          this.amount = budget.amount ? budget.amount.toString() : '0'; // Asigna el monto del presupuesto a la variable de `amount`
+        },
+        (error) => {
+          console.error('Error al obtener el presupuesto mensual:', error);
+          this.showNotification('No se pudo cargar el presupuesto mensual.', 'error');
+        }
+      );
+    }
   }
 }
