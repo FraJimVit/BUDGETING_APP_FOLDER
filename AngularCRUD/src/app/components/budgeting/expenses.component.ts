@@ -207,10 +207,23 @@ export class ExpensesComponent implements OnInit {
     const newAmount = parseFloat(
       prompt('Edit expense amount:', expense.amount.toString()) || '0'
     );
-
+  
     if (newName !== null && !isNaN(newAmount)) {
-      category.expenses[dateKey][index] = { ...expense, name: newName, amount: newAmount };
-      this.showNotification('Expense updated successfully!', 'success');
+      // Actualiza los campos relevantes del gasto
+      const updatedExpense = { ...expense, name: newName, amount: newAmount };
+  
+      // Llama al servicio para actualizar el gasto en el backend
+      this.genericService.updateExpense(updatedExpense.id, updatedExpense).subscribe(
+        () => {
+          // Actualiza visualmente el gasto solo si el backend confirma la actualización
+          category.expenses[dateKey][index] = updatedExpense;
+          this.showNotification('Expense updated successfully!', 'success');
+        },
+        (error) => {
+          console.error('Error updating expense:', error);
+          this.showNotification('Failed to update expense. Please try again.', 'error');
+        }
+      );
     } else {
       this.showNotification('Invalid input. Expense not updated.', 'error');
     }

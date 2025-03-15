@@ -63,5 +63,8 @@ export class GenericService<T> {
   deleteExpense(expenseId: string): Observable<any> {
     return this.http.delete(`${this.url}expense/${expenseId}`);
   }  
-  
+
+  updateExpense(id: string, expense: Expense): Observable<any> {
+    return this.http.put(`${this.url}expense/${id}`, expense);
+  }
 }
